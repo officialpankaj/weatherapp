@@ -10,8 +10,10 @@ export default {
       xl: ["20px", "24.38px"],
       "1xl": ["30px", "34.38px"],
       "2xl": ["40px", "44.38px"],
+      "3xl": ["50px", "54.38px"],
       "4xl": ["60px", "64.38px"],
       "6xl": ["80px", "84.38px"],
+      "7xl": ["90px", "94.38px"],
       "8xl": ["100px", "104.38px"],
     },
     extend: {
@@ -19,9 +21,9 @@ export default {
         mulish: ["Mulish", "sans-serif"],
       },
       colors: {
-        primary: "#FBFAF4",
-        secondary: "#E1F1F4",
-        tertiary: "#6129EE",
+        primary: "#F6F6F8",
+        secondary: "#FFBF5E",
+        tertiary: "#BEBEBE",
         "slate-gray": "#6D6D6D",
         "white-900": "rgba(255, 255, 255, 0.90)",
         "white-800": "rgba(255, 255, 255, 0.80)",
@@ -35,7 +37,7 @@ export default {
         "3xl": "0 10px 40px rgba(0, 0, 0, 0.1)",
       },
       backgroundImage: {
-        hero: "url('assets/images/collection-background.svg')",
+        "city-bg": "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/assets/images/city-bg.jpg')",
       },
       screens: {
         wide: "1440px",
