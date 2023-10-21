@@ -12,7 +12,7 @@ const WeaklyWeatherCard = ({ item }) => {
       onClick={() => {
         dispatch(setCurrentDateDetails(item));
       }}
-      className={`flex-1 transition-all duration-500 cursor-pointer text-xs md:text-base bg-white flex flex-col justify-between items-center py-3 rounded-2xl px-7 ${dateFormat(currentDateDetails?.time, "dd-mm-yyyy") === dateFormat(item?.time, "dd-mm-yyyy") ? "shadow-2xl" : ""}`}
+      className={`flex-1 transition-all duration-500 cursor-pointer text-xs md:text-base bg-white flex flex-col justify-between items-center py-3 rounded-2xl px-7 ${dateFormat(currentDateDetails?.time, "dd-mm-yyyy") === dateFormat(item?.time, "dd-mm-yyyy") ? "drop-shadow-2xl" : ""}`}
     >
       <h3 className="text-center font-medium w-max">{dateFormat(item?.time, "dd, ddd")}</h3>
       {item?.values?.weatherCodeMax && (

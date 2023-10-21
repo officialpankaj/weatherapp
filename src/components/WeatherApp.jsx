@@ -135,7 +135,7 @@ const WeatherApp = () => {
           <img src="assets/icons/small/42000_small.png" className="me-4" /> Rain - {currentDateDetails?.values?.precipitationProbabilityAvg ?? "__"}%
         </p>
         <div className="flex flex-col items-center justify-center mt-auto">
-          <div className="flex w-full flex-col rounded-2xl overflow-hidden shadow-sm bg-city-bg bg-slate-50 py-8 items-center">{mainLoading ? <Loader className="text-white" /> : <p className="font-semibold text-white">{currentLocation.formatted}</p>}</div>
+          <div className="flex w-full flex-col rounded-2xl overflow-hidden shadow-sm bg-city-bg bg-slate-50 py-8 px-5 items-center text-center">{mainLoading ? <Loader className="text-white" /> : <p className="font-semibold text-white">{currentLocation.formatted}</p>}</div>
         </div>
       </div>
       <div className="flex-1 bg-primary py-10 px-8 md:px-16 md:overflow-y-auto">
@@ -181,7 +181,7 @@ const WeatherApp = () => {
         </div>
 
         {forecastType === "weekly" && timelines?.daily?.length > 0 && (
-          <ul className="flex gap-3 py-12 overflow-x-auto md:overflow-x-hidden">
+          <ul className="flex gap-3 py-12 overflow-x-auto md:overflow-x-visible -mx-12 px-12">
             {timelines?.daily?.map((item, index) => {
               return <WeaklyWeatherCard item={item} key={"daily-stats-view" + index} />;
             })}
