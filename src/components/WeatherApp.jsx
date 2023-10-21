@@ -14,13 +14,8 @@ const WeatherApp = () => {
   const { currentDateDetails, currentLocation, timelines, degreeUnit, forecastType, mainLoading } = useSelector((state) => state.weather);
   const dispatch = useDispatch();
 
-  console.log(currentDateDetails);
-  console.log(timelines);
-
   useEffect(() => {
-    console.log("check1");
     if (currentLocation.lat && currentLocation.lon) {
-      console.log("check2");
       dispatch(setMainLoading(true));
       axios("/weather/forecast", {
         method: "GET",
@@ -31,7 +26,6 @@ const WeatherApp = () => {
         },
       })
         .then(({ data }) => {
-          console.log(data);
           dispatch(setTimelines(data?.timelines ?? {}));
           dispatch(setCurrentDateDetails(data?.timelines?.daily[0]));
         })
@@ -40,11 +34,10 @@ const WeatherApp = () => {
           dispatch(setMainLoading(false));
         });
     }
-    // dispatch(setCurrentDateDetails(timelines?.daily?.length > 0 ? timelines?.daily[0] : {}));
+    dispatch(setCurrentDateDetails(timelines?.daily?.length > 0 ? timelines?.daily[0] : {}));
   }, [currentLocation]);
 
   const fetchReverseGeocode = (latitude, longitude) => {
-    console.log("check3");
     axios("geocode/reverse", {
       method: "GET",
       baseURL: import.meta.env.VITE_GEOCODING_API_URL,
@@ -56,7 +49,6 @@ const WeatherApp = () => {
       },
     })
       .then(({ data }) => {
-        console.log(data);
         if (data?.results?.length > 0) {
           dispatch(
             setCurrentLocation({
@@ -73,10 +65,8 @@ const WeatherApp = () => {
   };
 
   const fetchUserLocation = () => {
-    console.log("check4");
     navigator.geolocation.getCurrentPosition(
       (response) => {
-        console.log(response);
         fetchReverseGeocode(response.coords.latitude, response.coords.longitude);
       },
       (error) => {
@@ -86,8 +76,8 @@ const WeatherApp = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="w-[28%] flex flex-col py-10 px-14">
+    <div className="flex h-screen flex-col md:flex-row">
+      <div className="w-full md:w-[28%] flex flex-col py-10 px-8 md:px-14">
         <div className="flex items-center justify-between">
           <SearchBar />
           <span className="w-[35px] h-[35px] p-2 bg-primary rounded-full" onClick={fetchUserLocation}>
@@ -148,11 +138,11 @@ const WeatherApp = () => {
           <div className="flex w-full flex-col rounded-2xl overflow-hidden shadow-sm bg-city-bg bg-slate-50 py-8 items-center">{mainLoading ? <Loader className="text-white" /> : <p className="font-semibold text-white">{currentLocation.formatted}</p>}</div>
         </div>
       </div>
-      <div className="flex-1 bg-primary py-10 px-16 overflow-y-auto">
+      <div className="flex-1 bg-primary py-10 px-8 md:px-16 md:overflow-y-auto">
         <div className="flex justify-between">
           <div className="flex">
             <h5
-              className={"text-xl font-semibold mr-7 cursor-pointer " + (forecastType === "daily" ? "underline underline-offset-8" : "text-[#C8C8C8]")}
+              className={"text-md md:text-xl font-semibold mr-5 md:mr-7 cursor-pointer " + (forecastType === "daily" ? "underline underline-offset-8" : "text-[#C8C8C8]")}
               onClick={() => {
                 dispatch(setForecastType("daily"));
                 dispatch(setCurrentDateDetails(timelines?.daily?.length > 0 ? timelines.daily[0] : []));
@@ -161,7 +151,7 @@ const WeatherApp = () => {
               Today
             </h5>
             <h5
-              className={"text-xl font-semibold mr-6 cursor-pointer " + (forecastType === "weekly" ? "underline underline-offset-8" : "text-[#C8C8C8]")}
+              className={"text-md md:text-xl font-semibold cursor-pointer " + (forecastType === "weekly" ? "underline underline-offset-8" : "text-[#C8C8C8]")}
               onClick={() => {
                 dispatch(setForecastType("weekly"));
               }}
@@ -172,7 +162,7 @@ const WeatherApp = () => {
           </div>
           <div className="flex">
             <span
-              className={`w-[41px] h-[41px] flex justify-center items-center rounded-full font-bold mr-4 cursor-pointer transition-all duration-500 ${degreeUnit === "C" ? "text-white bg-black" : "bg-white"}`}
+              className={`w-[25px] md:w-[41px] h-[25px] md:h-[41px] text-xs md:text-base flex justify-center items-center rounded-full font-bold mr-3 md:mr-4 cursor-pointer transition-all duration-500 ${degreeUnit === "C" ? "text-white bg-black" : "bg-white"}`}
               onClick={() => {
                 dispatch(setDegreeUnit("C"));
               }}
@@ -180,7 +170,7 @@ const WeatherApp = () => {
               °C
             </span>
             <span
-              className={`w-[41px] h-[41px] flex justify-center items-center rounded-full font-bold mr-4 cursor-pointer transition-all duration-500 ${degreeUnit === "F" ? "text-white bg-black" : "bg-white"}`}
+              className={`w-[25px] md:w-[41px] h-[25px] md:h-[41px] text-xs md:text-base flex justify-center items-center rounded-full font-bold mr-3 md:mr-4 cursor-pointer transition-all duration-500 ${degreeUnit === "F" ? "text-white bg-black" : "bg-white"}`}
               onClick={() => {
                 dispatch(setDegreeUnit("F"));
               }}
@@ -191,7 +181,7 @@ const WeatherApp = () => {
         </div>
 
         {forecastType === "weekly" && timelines?.daily?.length > 0 && (
-          <ul className="flex gap-3 my-12">
+          <ul className="flex gap-3 py-12 overflow-x-auto md:overflow-x-hidden">
             {timelines?.daily?.map((item, index) => {
               return <WeaklyWeatherCard item={item} key={"daily-stats-view" + index} />;
             })}
@@ -225,107 +215,117 @@ const WeatherApp = () => {
           </div>
         )}
         <h2 className="text-xl font-semibold mb-4">Day&apos;s Highlight</h2>
-        <div className="flex gap-6 py-3">
-          <div className="bg-white w-1/3 rounded-2xl flex flex-col justify-between px-8 py-6">
-            <h3 className="font-normal text-tertiary text-[1.2rem] mb-4">Feels Like</h3>
-            <div className="font-semibold text-xl mt-5 mb-8">
+        <div className="flex py-3 flex-wrap">
+          <div className="w-1/2 md:w-1/3 pr-2 md:pr-4 pb-3 md:pb-3">
+            <div className="bg-white h-full w-full rounded-2xl flex flex-col justify-between px-5 md:px-8 py-6">
+              <h3 className="font-normal text-tertiary text-[0.9rem] md:text-[1.2rem] mb-4">Feels Like</h3>
               <div className="font-semibold text-xl mt-5 mb-8">
-                <span className="font-medium text-4xl">
+                <div className="font-semibold text-xl mt-3 md:mt-5 mb-5 md:mb-8">
+                  <span className="font-medium text-1xl md:text-4xl">
+                    {mainLoading ? (
+                      <Loader className="w-12 h-12" />
+                    ) : (
+                      <>
+                        {currentDateDetails?.values?.temperatureAvg ? getTemperature(currentDateDetails?.values?.temperatureAvg, degreeUnit) : "__"}
+                        <sup className="text-md md:text-2xl">°{degreeUnit}</sup>
+                      </>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-1/2 md:w-1/3 pl-2 md:px-2 pb-3 md:pb-3">
+            <div className="bg-white h-full w-full rounded-2xl flex flex-col justify-between px-5 md:px-8 py-6">
+              <h3 className="font-normal text-tertiary text-[0.9rem] md:text-[1.2rem] mb-4">Wind Status</h3>
+              <div className="font-semibold text-xs md:text-xl mt-0 md:mt-5 mb-0 md:mb-8">
+                {mainLoading ? (
+                  <Loader className="w-12 h-12" />
+                ) : (
+                  <>
+                    <span className="font-medium text-1xl md:text-4xl">{currentDateDetails?.values?.windSpeedAvg ?? "__"}</span> km/h
+                  </>
+                )}
+              </div>
+              <p className="flex items-center">
+                <span className="border-[3px] border-primary rounded-full flex justify-center items-center w-[25px] md:w-[40px] p-1 md:p-2 mr-2">
+                  <img src="/assets/icons/location-icon.svg" className="rotate-45 w-100" />
+                </span>
+                <span className="font-medium text-xs md:text-xl">WSW</span>
+              </p>
+            </div>
+          </div>
+          <div className="w-1/2 md:w-1/3 pr-2 md:pl-4 py-1 md:pb-3">
+            <div className="bg-white h-full w-full rounded-2xl flex flex-col justify-between px-5 md:px-8 py-6">
+              <h3 className="font-normal text-tertiary text-[0.9rem] md:text-[1.2rem] mb-4">Sunrise & Sunset</h3>
+              <div className="flex flex-col">
+                <div className="flex py-2 md:py-3 items-center">
+                  <img src="/assets/icons/sunrise-light@2x.png" className="w-5 md:w-auto drop-shadow-lg mr-4" />
+                  <div className="text-sm md:text-xl font-medium">{mainLoading ? <Loader className="ms-6" /> : currentDateDetails?.values?.sunriseTime ? dateFormat(currentDateDetails?.values?.sunriseTime, "h:MM TT") : "__:__"}</div>
+                </div>
+                <div className="flex py-2 md:py-3 items-center">
+                  <img src="/assets/icons/sunset-light@2x.png" className="w-5 md:w-auto drop-shadow-lg mr-4" />
+                  <div className="text-sm md:text-xl font-medium">{mainLoading ? <Loader className="ms-6" /> : currentDateDetails?.values?.sunsetTime ? dateFormat(currentDateDetails?.values?.sunsetTime, "h:MM TT") : "__:__"}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-1/2 md:w-1/3 pl-2 md:pr-4 py-1 md:pt-3">
+            <div className="bg-white h-full w-full rounded-2xl flex flex-col justify-between px-5 md:px-8 py-6">
+              <h3 className="font-normal text-tertiary text-[0.9rem] md:text-[1.2rem] mb-4">Humidity</h3>
+              <div className="font-semibold text-xl mt-5 mb-8">
+                <div className="font-medium text-1xl md:text-4xl">
                   {mainLoading ? (
                     <Loader className="w-12 h-12" />
                   ) : (
                     <>
-                      {currentDateDetails?.values?.temperatureAvg ? getTemperature(currentDateDetails?.values?.temperatureAvg, degreeUnit) : "__"}
-                      <sup className="text-2xl">°{degreeUnit}</sup>
+                      {currentDateDetails?.values?.humidityAvg ?? "__"}
+                      <sup className="text-base md:text-2xl">%</sup>
                     </>
                   )}
-                </span>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="bg-white w-1/3 rounded-2xl flex flex-col justify-between px-8 py-6">
-            <h3 className="font-normal text-tertiary text-[1.2rem] mb-4">Wind Status</h3>
-            <div className="font-semibold text-xl mt-5 mb-8">
-              {mainLoading ? (
-                <Loader className="w-12 h-12" />
-              ) : (
-                <>
-                  <span className="font-medium text-4xl">{currentDateDetails?.values?.windSpeedAvg ?? "__"}</span> km/h
-                </>
+              {!mainLoading && currentDateDetails?.values?.humidityAvg && (
+                <p className="flex items-center">
+                  <span className="font-medium text-base md:text-xl">{currentDateDetails?.values?.humidityAvg <= 30 ? "Too Dry" : currentDateDetails?.values?.humidityAvg < 50 ? "Normal" : "Too Humid"}</span>
+                </p>
               )}
             </div>
-            <p className="flex items-center">
-              <span className="border-[3px] border-primary rounded-full flex justify-center items-center w-[40px] p-2 mr-2">
-                <img src="/assets/icons/location-icon.svg" className="rotate-45 w-100" />
-              </span>
-              <span className="font-medium text-xl">WSW</span>
-            </p>
           </div>
-          <div className="bg-white w-1/3 rounded-2xl flex flex-col justify-between px-8 py-6">
-            <h3 className="font-normal text-tertiary text-[1.2rem] mb-4">Sunrise & Sunset</h3>
-            <div className="flex flex-col">
-              <div className="flex py-3 items-center">
-                <img src="/assets/icons/sunrise-light@2x.png" className="drop-shadow-lg mr-4" />
-                <div className="text-xl font-medium">{mainLoading ? <Loader className="ms-6" /> : currentDateDetails?.values?.sunriseTime ? dateFormat(currentDateDetails?.values?.sunriseTime, "h:MM TT") : "__:__"}</div>
-              </div>
-              <div className="flex py-3 items-center">
-                <img src="/assets/icons/sunset-light@2x.png" className="drop-shadow-lg mr-4" />
-                <div className="text-xl font-medium">{mainLoading ? <Loader className="ms-6" /> : currentDateDetails?.values?.sunsetTime ? dateFormat(currentDateDetails?.values?.sunsetTime, "h:MM TT") : "__:__"}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-6 py-3">
-          <div className="bg-white w-1/3 rounded-2xl flex flex-col justify-between px-8 py-6">
-            <h3 className="font-normal text-tertiary text-[1.2rem] mb-4">Humidity</h3>
-            <div className="font-semibold text-xl mt-5 mb-8">
-              <div className="font-medium text-4xl">
-                {mainLoading ? (
-                  <Loader className="w-12 h-12" />
-                ) : (
-                  <>
-                    {currentDateDetails?.values?.humidityAvg ?? "__"}
-                    <sup className="text-2xl">%</sup>
-                  </>
-                )}
-              </div>
-            </div>
-            {!mainLoading && currentDateDetails?.values?.humidityAvg && (
-              <p className="flex items-center">
-                <span className="font-medium text-xl">{currentDateDetails?.values?.humidityAvg <= 30 ? "Too Dry" : currentDateDetails?.values?.humidityAvg < 50 ? "Normal" : "Too Humid"}</span>
-              </p>
-            )}
-          </div>
-          <div className="bg-white w-1/3 rounded-2xl flex flex-col justify-between px-8 py-6">
-            <h3 className="font-normal text-tertiary text-[1.2rem] mb-4">Visibility</h3>
-            <div className="font-semibold text-xl mt-5 mb-8">
+          <div className="w-1/2 md:w-1/3 pr-2 md:px-2 pt-3 md:pt-3">
+            <div className="bg-white h-full w-full rounded-2xl flex flex-col justify-between px-5 md:px-8 py-6">
+              <h3 className="font-normal text-tertiary text-[0.9rem] md:text-[1.2rem] mb-4">Visibility</h3>
               <div className="font-semibold text-xl mt-5 mb-8">
-                {mainLoading ? (
-                  <Loader className="w-12 h-12" />
-                ) : (
-                  <>
-                    <span className="font-medium text-4xl">{currentDateDetails?.values?.visibilityAvg ?? "__"}</span> km
-                  </>
-                )}
+                <div className="font-semibold text-xs md:text-xl mt-0 md:mt-5 mb-0 md:mb-8">
+                  {mainLoading ? (
+                    <Loader className="w-12 h-12" />
+                  ) : (
+                    <>
+                      <span className="font-medium text-1xl md:text-4xl">{currentDateDetails?.values?.visibilityAvg ?? "__"}</span> km
+                    </>
+                  )}
+                </div>
               </div>
+              {!mainLoading && currentDateDetails?.values?.visibilityAvg && (
+                <p className="flex items-center">
+                  <span className="font-medium text-base md:text-xl">{currentDateDetails?.values?.visibilityAvg < 2.8 ? "Thin Fog" : currentDateDetails?.values?.visibilityAvg < 5.9 ? "Haze" : currentDateDetails?.values?.visibilityAvg < 12 ? "Light Haze" : currentDateDetails?.values?.visibilityAvg < 18 ? "Near Clear Sky" : "Clear"}</span>
+                </p>
+              )}
             </div>
-            {!mainLoading && currentDateDetails?.values?.visibilityAvg && (
-              <p className="flex items-center">
-                <span className="font-medium text-xl">{currentDateDetails?.values?.visibilityAvg < 2.8 ? "Thin Fog" : currentDateDetails?.values?.visibilityAvg < 5.9 ? "Haze" : currentDateDetails?.values?.visibilityAvg < 12 ? "Light Haze" : currentDateDetails?.values?.visibilityAvg < 18 ? "Near Clear Sky" : "Clear"}</span>
-              </p>
-            )}
           </div>
-          <div className="bg-white w-1/3 rounded-2xl flex flex-col  px-8 py-6">
-            <h3 className="font-normal text-tertiary text-[1.2rem] mb-4">Pressure</h3>
-            <div className="font-semibold text-xl mt-5 mb-8">
+          <div className="w-1/2 md:w-1/3 pl-2 md:pl-4 pt-3 md:pt-3">
+            <div className="bg-white h-full w-full rounded-2xl flex flex-col px-5 md:px-8 py-6">
+              <h3 className="font-normal text-tertiary text-[0.9rem] md:text-[1.2rem] mb-4">Pressure</h3>
               <div className="font-semibold text-xl mt-5 mb-8">
-                {mainLoading ? (
-                  <Loader className="w-12 h-12" />
-                ) : (
-                  <>
-                    <span className="font-medium text-4xl">{currentDateDetails?.values?.pressureSurfaceLevelAvg ?? "__"}</span> Hg
-                  </>
-                )}
+                <div className="font-semibold text-xs md:text-xl mt-3 md:mt-5 mb-0 md:mb-8">
+                  {mainLoading ? (
+                    <Loader className="w-12 h-12" />
+                  ) : (
+                    <>
+                      <span className="font-medium text-[28px] md:text-4xl">{currentDateDetails?.values?.pressureSurfaceLevelAvg ?? "__"}</span> Hg
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
