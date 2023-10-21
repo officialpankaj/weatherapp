@@ -281,3 +281,12 @@ export const weatherCode = {
   80021: "Mostly Cloudy and Thunderstorm",
   80001: "Thunderstorm",
 };
+
+export const defaultHourlyData = [
+  { Temperature: 0, time: "1 am" },
+  { Temperature: 0, time: "2 am" },
+  { Temperature: 0, time: "3 am" },
+  { Temperature: 0, time: "4 am" },
+  { Temperature: 0, time: "5 am" },
+  { Temperature: 0, time: "6 am" },
+];
