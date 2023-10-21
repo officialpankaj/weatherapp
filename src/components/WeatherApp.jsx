@@ -80,7 +80,7 @@ const WeatherApp = () => {
       <div className="w-full md:w-[28%] flex flex-col py-10 px-8 md:px-14">
         <div className="flex items-center justify-between">
           <SearchBar />
-          <span className="w-[35px] h-[35px] p-2 bg-primary rounded-full" onClick={fetchUserLocation}>
+          <span className="w-[35px] h-[35px] p-2 bg-primary rounded-full" title="Get your current location" onClick={fetchUserLocation}>
             <img src="assets/icons/location-icon.png" className="w-full" />
           </span>
         </div>
