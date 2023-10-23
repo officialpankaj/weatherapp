@@ -181,7 +181,7 @@ const WeatherApp = () => {
         </div>
 
         {forecastType === "weekly" && timelines?.daily?.length > 0 && (
-          <ul className="flex gap-3 py-12 overflow-x-auto md:overflow-x-visible -mx-12 px-12">
+          <ul className="flex gap-3 py-12 overflow-x-auto md:overflow-x-visible -mx-8 md:-mx-12 px-8 md:px-12">
             {timelines?.daily?.map((item, index) => {
               return <WeaklyWeatherCard item={item} key={"daily-stats-view" + index} />;
             })}
