@@ -13,7 +13,7 @@ const SearchBar = () => {
   const dispatch = useDispatch();
 
   const searchPlace = () => {
-    if (isSearchFocused && setSearchText) {
+    if (isSearchFocused && searchText) {
       setIsLoading(true);
       axios("geocode/autocomplete", {
         method: "GET",
